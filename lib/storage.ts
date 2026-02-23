@@ -8,7 +8,7 @@ const KEYS = {
   MICRO: '@obra_micro',
   EQUIPMENT: '@obra_equipment',
   CLIMATE: '@obra_climate',
-  SEEDED: '@obra_seeded',
+  SEEDED: '@obra_seeded_v2',
 };
 
 async function ensureSeeded() {

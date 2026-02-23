@@ -20,7 +20,7 @@ Mobile app for construction site operations control, focused on schedule trackin
 - `app/micro-list.tsx` - Micro-activities list
 - `lib/types.ts` - TypeScript interfaces
 - `lib/storage.ts` - AsyncStorage CRUD operations
-- `lib/seed-data.ts` - Initial seed data with 12 activities and 10 equipment
+- `lib/seed-data.ts` - Real schedule data with 81 activities (from CR_BL Rev05) and 10 equipment
 - `lib/helpers.ts` - Formatting and utility functions
 - `constants/colors.ts` - Theme colors
 
@@ -33,5 +33,12 @@ Mobile app for construction site operations control, focused on schedule trackin
 - Weather conditions registration
 - Daily report with executive summary and delays
 
+## Seed Data
+- Seed version key: `@obra_seeded_v2` - increment suffix when changing seed data to force re-seed
+- 81 activities from the real CR_BL_Desc._Barragem_Alto_Jacutinga_Rev05 schedule PDF
+- Activities include EDT hierarchy, planned dates, actual dates, % previsto/realizado, desvio
+- Status auto-calculated: Concluido, Em andamento, Nao iniciado, Atrasado
+
 ## Recent Changes
+- 2026-02-23: Updated seed data with complete 81-activity real schedule from PDF (Rev05)
 - 2026-02-23: Initial build with full feature set
