@@ -1,0 +1,599 @@
+Quero que você desenhe e/ou desenvolva um APLICATIVO MOBILE de controle operacional de obras, focado em acompanhamento de cronograma, lançamentos diários e indicadores, baseado nas especificações abaixo. 
+
+ 
+
+======================== 
+
+1. CONTEXTO DO APLICATIVO 
+
+======================== 
+
+O app será usado em obra para: 
+
+ 
+
+- Acompanhar o cronograma de um projeto (planejado x realizado) 
+
+- Registrar diariamente o avanço das atividades (lançamentos diários) 
+
+- Registrar microatividades com equipamentos e horas 
+
+- Registrar condições de clima do dia (poeira, neblina, chuvas, pluviometria) 
+
+- Gerar um “relatório diário” consolidado 
+
+- Alimentar um dashboard com indicadores (produtividade, horas por equipamento etc.) 
+
+ 
+
+Projeto de referência: Descaracterização da Barragem Alto Jacutinga. 
+
+ 
+
+O usuário típico é um apontador/encarregado em campo, usando celular. 
+
+ 
+
+======================== 
+
+2. MODELO DE DADOS (ENTIDADES PRINCIPAIS) 
+
+======================== 
+
+ 
+
+Crie uma base de dados (tabelas ou coleções) com pelo menos as entidades abaixo: 
+
+ 
+
+2.1. Atividade / Cronograma 
+
+- Id (chave única) 
+
+- EDT (código da atividade) 
+
+- Nome (nome da atividade) 
+
+- Duracao_dias 
+
+- Inicio_LB (data planejada início) 
+
+- Termino_LB (data planejada término) 
+
+- Inicio_real (data real início) 
+
+- Termino_real (data real término) 
+
+- Previsto_pct (0 a 1 ou 0 a 100) 
+
+- Realizado_pct (0 a 1 ou 0 a 100) 
+
+- DesvioPrev_pct (opcional) 
+
+- DesvioReal_pct (opcional) 
+
+- Status (Não iniciado / Em andamento / Concluído / Atrasado) 
+
+ 
+
+2.2. Lançamento Diário 
+
+- IdLanc (chave) 
+
+- DataLancamento 
+
+- Usuario 
+
+- IdAtividade (referência para Atividade.Id) 
+
+- EDT 
+
+- NomeAtividade 
+
+- InicioPlanejado (Inicio_LB) 
+
+- TerminoPlanejado (Termino_LB) 
+
+- InicioReal 
+
+- TerminoReal 
+
+- Previsto_pct 
+
+- Realizado_pct_Anterior 
+
+- Realizado_pct_Novo 
+
+- AvancoDoDia_pct (Realizado_pct_Novo - Realizado_pct_Anterior) 
+
+- Observacao 
+
+- Status (calculado) 
+
+- Evidencia (caminho de arquivo, URL ou foto) 
+
+- Timestamp (data/hora do registro) 
+
+- Condições de clima do dia (pode vir de uma entidade “ClimaDia” ou campos agregados): 
+
+  - Poeira (Sim/Não) 
+
+  - Neblina (Sim/Não) 
+
+  - Chuvas (Sim/Não) 
+
+  - Pluviometria_mm (número) 
+
+ 
+
+2.3. Microatividade 
+
+- IdMicro (chave) 
+
+- DataLancamento 
+
+- Usuario 
+
+- IdAtividadePai (Atividade.Id) 
+
+- EDT_Pai 
+
+- NomeAtividadePai 
+
+- DescricaoMicro 
+
+- Equipamento (ex.: 23120 Caminhão bascula, MQ2616 Caminhão Pipa, etc.) 
+
+- Quantidade (ex.: m³, m², t, etc.) 
+
+- Unidade 
+
+- HorasTrabalhadas 
+
+- Status 
+
+- Observacao 
+
+- Timestamp 
+
+ 
+
+2.4. Equipamento 
+
+- Codigo (ex.: 23120, MQ2616, 0913…) 
+
+- Descricao (ex.: Caminhão bascula, Caminhão Pipa, Retroescavadeira…) 
+
+- Ativo (sim/não) 
+
+ 
+
+2.5. Usuário 
+
+- IdUsuario 
+
+- Nome 
+
+- Login (se necessário) 
+
+- Perfil (Apontador, Encarregado, Supervisor, Administrador) 
+
+ 
+
+2.6. ClimaDia 
+
+- Data 
+
+- Poeira (Sim/Não) 
+
+- Neblina (Sim/Não) 
+
+- Chuvas (Sim/Não) 
+
+- Pluviometria_mm 
+
+- RegistradoPor (Usuário) 
+
+ 
+
+2.7. LogSistema (opcional, mas desejável) 
+
+- DataHora 
+
+- Acao 
+
+- Info 
+
+- Erro (se houver) 
+
+ 
+
+======================== 
+
+3. TELAS / FLUXOS DO APLICATIVO 
+
+======================== 
+
+ 
+
+Crie pelo menos as telas abaixo: 
+
+ 
+
+3.1. Tela de Login (opcional, se o ambiente permitir) 
+
+- Campos: Usuário / Senha ou autenticação simplificada 
+
+- Após login, levar para o Dashboard 
+
+ 
+
+3.2. Tela Home / Dashboard 
+
+- Mostrar KPIs principais: 
+
+  - % médio previsto (média de Previsto_pct das atividades) 
+
+  - % médio realizado (média de Realizado_pct) 
+
+  - Número de atividades: 
+
+    - Não iniciadas 
+
+    - Em andamento 
+
+    - Concluídas 
+
+    - Atrasadas 
+
+  - Horas totais por dia (soma de HorasTrabalhadas das microatividades do dia) 
+
+- Botões de acesso rápido: 
+
+  - “Lançar Progresso” 
+
+  - “Registrar Microatividade” 
+
+  - “Registrar Clima do Dia” 
+
+  - “Gerar Relatório Diário” 
+
+ 
+
+3.3. Tela de Lista de Atividades (Cronograma) 
+
+- Filtros: 
+
+  - Por EDT (com opção “Todos”) 
+
+  - Por Nome da Atividade (campo de busca) 
+
+  - Por Status (Todos / Não iniciado / Em andamento / Concluído / Atrasado) 
+
+  - Por período (data inicial e final) para Inicio_LB ou Termino_LB 
+
+- Lista exibindo por atividade: 
+
+  - Id, EDT, Nome 
+
+  - Inicio_LB, Termino_LB 
+
+  - Duracao_dias 
+
+  - Previsto_pct, Realizado_pct 
+
+  - Status (com cor ou ícone) 
+
+ 
+
+Ao tocar em uma atividade, abrir a Tela de Detalhes da Atividade. 
+
+ 
+
+3.4. Tela de Detalhe da Atividade 
+
+Mostrar: 
+
+- Dados básicos: Id, EDT, Nome, descrições 
+
+- Datas: 
+
+  - Início/LB, Término/LB 
+
+  - Início real, Término real 
+
+- Percentuais: 
+
+  - Previsto_pct 
+
+  - Realizado_pct 
+
+  - Desvios (se possível) 
+
+- Status atual 
+
+ 
+
+Botões: 
+
+- “Lançar Progresso” 
+
+- “Registrar Microatividade” 
+
+- “Marcar Início Real” 
+
+- “Marcar Término Real” 
+
+- “Ver Lançamentos da Atividade” 
+
+ 
+
+3.5. Tela de Lançamento de Progresso 
+
+Campos: 
+
+- Data do lançamento (padrão = hoje) 
+
+- % realizado novo 
+
+- Observação (obrigatória quando avanço do dia for 0) 
+
+- Anexar evidência (foto, arquivo, link) 
+
+- Condições de clima (opcional ou herdadas da Tela de Clima do Dia): 
+
+  - Poeira (Sim/Não) 
+
+  - Neblina (Sim/Não) 
+
+  - Chuvas (Sim/Não) 
+
+  - Pluviometria_mm 
+
+ 
+
+Regras de negócio: 
+
+- Realizado_pct deve ficar entre 0% e 100% 
+
+- Não permitir reduzir progresso (Realizado_pct_Novo < Realizado_pct_Anterior), a menos que o perfil do usuário seja Administrador (ou outra lógica de permissão). 
+
+- Ao salvar: 
+
+  - Registrar um novo Lançamento Diário 
+
+  - Atualizar o Realizado_pct da Atividade 
+
+  - Recalcular Status: 
+
+    - Não iniciado: Realizado_pct = 0 e sem Inicio_real 
+
+    - Em andamento: 0 < Realizado_pct < 100 
+
+    - Concluído: Realizado_pct >= 100 OU Termino_real preenchido 
+
+    - Atrasado: hoje > Termino_LB E Realizado_pct < 100 
+
+ 
+
+3.6. Tela de Microatividades 
+
+Fluxo: 
+
+- Escolher Atividade Pai 
+
+- Campos: 
+
+  - Data lançamento 
+
+  - Descrição da microatividade 
+
+  - Equipamento (combobox com opções pré-cadastradas) 
+
+  - Quantidade + Unidade 
+
+  - Horas trabalhadas 
+
+  - Status 
+
+  - Observação 
+
+- Salvar registrando em Microatividade 
+
+ 
+
+3.7. Tela de Clima do Dia 
+
+- Data (padrão = hoje) 
+
+- Poeira: Sim/Não 
+
+- Neblina: Sim/Não 
+
+- Chuvas: Sim/Não 
+
+- Pluviometria (mm) 
+
+- Botão “Salvar Clima do Dia” 
+
+ 
+
+Esses dados serão usados no cabeçalho do relatório diário. 
+
+ 
+
+3.8. Tela de Relatório Diário 
+
+- Selecionar Data de Referência 
+
+- Mostrar: 
+
+  - Cabeçalho: 
+
+    - Projeto 
+
+    - Data 
+
+    - Condições de clima (Poeira, Neblina, Chuvas, Pluviometria) 
+
+    - Usuários que fizeram lançamentos no dia 
+
+  - Resumo executivo: 
+
+    - Total de atividades com lançamento no dia 
+
+    - Soma do AvancoDoDia_pct 
+
+    - Quantidade de atividades atrasadas impactadas 
+
+  - Tabela detalhada dos lançamentos do dia: 
+
+    - EDT 
+
+    - NomeAtividade 
+
+    - Realizado_pct_Anterior 
+
+    - Realizado_pct_Novo 
+
+    - AvancoDoDia_pct 
+
+    - Status 
+
+    - Observacao 
+
+    - Evidencia (link/ícone) 
+
+  - Seção “Pendências / Atrasos”: 
+
+    - Listar atividades com Termino_LB < dataRef e Realizado_pct < 100 
+
+ 
+
+Se possível, incluir um botão “Exportar como PDF” ou “Compartilhar” (ex.: gerar um relatório em PDF ou imagem para envio por WhatsApp/e-mail). 
+
+ 
+
+======================== 
+
+4. REGRAS DE CÁLCULO E LÓGICA DE NEGÓCIO 
+
+======================== 
+
+ 
+
+4.1. Cálculo de Avanço do Dia 
+
+AvancoDoDia_pct = Realizado_pct_Novo - Realizado_pct_Anterior 
+
+ 
+
+4.2. Status da Atividade 
+
+- Não iniciado: 
+
+  - Realizado_pct = 0 
+
+  - Inicio_real vazio 
+
+- Em andamento: 
+
+  - 0 < Realizado_pct < 100 
+
+- Concluído: 
+
+  - Realizado_pct >= 100 ou Termino_real preenchido 
+
+- Atrasado: 
+
+  - Data atual > Termino_LB e Realizado_pct < 100 
+
+ 
+
+4.3. Restrição para redução de progresso 
+
+- Regra padrão: não permitir Realizado_pct_Novo < Realizado_pct_Anterior. 
+
+- Permitir apenas se o usuário tiver perfil administrador ou se houver uma confirmação especial. 
+
+ 
+
+4.4. Clima do dia 
+
+- Deve ser único por data (uma linha de clima por dia, por projeto). 
+
+- Ao gerar o relatório diário, usar o clima do dia da dataRef. 
+
+ 
+
+======================== 
+
+5. DASHBOARD E INDICADORES 
+
+======================== 
+
+ 
+
+No Dashboard do app, incluir (pode ser em cards e gráficos): 
+
+ 
+
+- KPI 1: % médio previsto (média de Previsto_pct das atividades) 
+
+- KPI 2: % médio realizado (média de Realizado_pct das atividades) 
+
+- KPI 3: Número de atividades: 
+
+  - Não iniciadas 
+
+  - Em andamento 
+
+  - Concluídas 
+
+  - Atrasadas 
+
+ 
+
+- Indicador: Horas por equipamento 
+
+  - Somar HorasTrabalhadas das microatividades por equipamento 
+
+  - Mostrar ranking tipo “Top equipamentos por horas” 
+
+ 
+
+- Indicador: Produtividade por equipamento 
+
+  - Produtividade = Quantidade total / HorasTrabalhadas totais daquele equipamento 
+
+  - Mostrar tabela e/ou gráfico para comparar equipamentos 
+
+ 
+
+- (Opcional) Curva simples de “previsto x realizado” no tempo, baseada em lançamentos diários ou dados do cronograma. 
+
+ 
+
+======================== 
+
+6. UX E DETALHES GERAIS 
+
+======================== 
+
+ 
+
+- Interface simples e amigável para uso em campo (botões grandes, poucas digitações). 
+
+- Preferir listas com filtros e buscas. 
+
+- Onde possível, usar seleção por toque (combobox, listas) ao invés de digitação livre. 
+
+- Permitir funcionamento offline com sincronização posterior (se a tecnologia da plataforma permitir). 
+
+- Seguir boas práticas de performance e validação (campos obrigatórios, mensagens claras de erro). 
+
+ 
+
+Use esse detalhamento para gerar a melhor arquitetura possível do aplicativo mobile, com telas, navegação, banco de dados e regras de negócio alinhadas a um sistema de controle operacional de obra, focado em cronograma, lançamentos diários, microatividades, condições de clima e relatórios diários. 
+
+ 
