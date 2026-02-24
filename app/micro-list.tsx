@@ -23,10 +23,15 @@ export default function MicroListScreen() {
   const renderItem = ({ item }: { item: MicroActivity }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
-        <Ionicons name="construct" size={16} color={Colors.info} />
-        <Text style={styles.edt}>{item.edtPai}</Text>
+        <Ionicons name={item.isAvulsa ? 'add-circle' : 'construct'} size={16} color={item.isAvulsa ? Colors.warning : Colors.info} />
+        {item.isAvulsa ? (
+          <View style={styles.avulsaBadge}><Text style={styles.avulsaBadgeText}>AVULSA</Text></View>
+        ) : (
+          <Text style={styles.edt}>{item.edtPai}</Text>
+        )}
         <Text style={styles.hours}>{item.horasTrabalhadas}h</Text>
       </View>
+      {item.isAvulsa && <Text style={styles.avulsaName}>{item.nomeAtividadePai}</Text>}
       <Text style={styles.desc}>{item.descricaoMicro}</Text>
       <View style={styles.metaRow}>
         <View style={styles.metaPill}>
@@ -85,4 +90,7 @@ const styles = StyleSheet.create({
   time: { fontSize: 11, color: Colors.textTertiary },
   empty: { alignItems: 'center', paddingTop: 60, gap: 12 },
   emptyText: { fontSize: 15, color: Colors.textTertiary },
+  avulsaBadge: { backgroundColor: '#FEF3C7', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
+  avulsaBadgeText: { fontSize: 11, fontWeight: '800', color: '#92400E' },
+  avulsaName: { fontSize: 13, fontWeight: '600', color: Colors.warning, marginBottom: 4 },
 });

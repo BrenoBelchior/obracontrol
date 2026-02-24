@@ -56,6 +56,7 @@ export interface MicroActivity {
   status: string;
   observacao: string;
   timestamp: string;
+  isAvulsa?: boolean;
 }
 
 export interface Equipment {
